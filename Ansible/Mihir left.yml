@@ -1,0 +1,73 @@
+---
+# tasks file for CDP_Int_update
+
+- name: GATHER LIST OF CDP LOCAL INTERFACES
+  nxos_command:
+    commands:
+      - show cdp neighbors | json-pretty
+  register: cdp
+  tags: gather, looptest
+
+- debug: msg="{{ cdp.stdout[0].TABLE_cdp_neighbor_brief_info.ROW_cdp_neighbor_brief_info[0].intf_id }}"
+  with_items: "{{ cdp }}"
+  tags: gather
+
+- debug: msg="{{ cdp.stdout|map(attribute='{{intf_id}}')|list }}"
+  tags: looptest
+
+- debug: msg="{{ item.stdout[0].TABLE_cdp_neighbor_brief_info.ROW_cdp_neighbor_brief_info[0].intf_id }}"
+  with_items: "{{ cdp }}"
+  register: loop
+  tags: looptest
+
+- name: GATHER DISTANT DEVICE PORT
+  nxos_command:
+    commands:
+      - command: show cdp neigh int "{{ item }}"
+        output: json
+    with_items: "{{ loop }}"
+  register: afterloop
+  tags: looptest
+
+- debug: var=afterloop
+  tags: looptest
+
+#- name: GATHER DISTANT DEVICE PORT
+#  nxos_command:
+#    commands:
+#      - command: show cdp neigh int mgmt0 | json-pretty
+#  register: distant_int
+#  tags: test
+
+- debug: msg="{{ distant_int.stdout[0].TABLE_cdp_neighbor_brief_info.ROW_cdp_neighbor_brief_info.port_id }}"
+  tags: test
+
+- debug: msg="{{ distant_int.stdout[0].TABLE_cdp_neighbor_brief_info.ROW_cdp_neighbor_brief_info.device_id }}"
+  tags: test
+
+  # Gather facts with SNMP version 2
+#- name: GATHER OS via SNMP
+#  snmp_device_version:
+#    host: "{{ inventory_hostname }}"
+#    version: 2c
+#    community: "{{ SNMP_RO }}"
+#  delegate_to: local
+#  register: output
+
+#- set_fact: OSFOUND="{{output.ansible_facts.ansible_device_os}}"
+#- set_fact: VENDOR="{{output.ansible_facts.ansible_device_vendor}}"
+
+#- name: GET LLDP NEIGHBORS
+#  ntc_show_command:
+#    connection=ssh
+#    platform={{ VENDOR }}_{{ OSFOUND }}
+#    template_dir='/opt/ansible/library/ntc_templates/templates'
+#    command='show cdp neighbors'
+#    host={{ inventory_hostname }}
+#    username={{ user }}
+#    password={{ pass }}
+#  register: neighbors
+#  tags: neighbors
+
+#- name: "... OUTPUT ..."
+#  debug: msg="{{neighbors}}"

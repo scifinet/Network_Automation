@@ -1,0 +1,89 @@
+---
+# tasks file for roles/vty
+  - name: GATHER VTY INFO => IOS
+    ios_command:
+      commands:
+        - show run | i access-class
+    #when: OSFOUND == 'ios' or OSFOUND == 'ios-xe'
+    register: findvty
+    #tags: vty
+
+  - debug: msg="{{findvty.stdout_lines}}"
+    #tags: vty
+
+  - set_fact: pattern=" (\w+) "
+    #tags: vty
+
+  - name: SETTING MATCH VAR
+    set_fact: MATCH="{{findvty.stdout[0] | regex_search(pattern) | replace(' ', '')}}"
+    #tags: vty
+
+  - debug: var=MATCH
+    #tags: vty
+
+  - name: CURRENT VTY ACL
+    ios_command:
+      commands: "show access-list {{ MATCH }}"
+    #when: OSFOUND == 'ios'
+    register: beforeacl
+    #tags: vty
+
+  - debug: msg="{{beforeacl.stdout_lines}}"
+    #tags: vty
+
+###### PUSH CONFIGURE #######
+  - name: REMOVE OLD VTY ACCESS_CLASS
+    ios_config:
+      lines:
+        - "no access-class {{ MATCH }} in"
+      parents: ['line vty 0 15']
+      match: exact
+    when: "'{{ MATCH }}' != None"
+    #when: OSFOUND == 'ios'
+
+  - name: REMOVE OLD ACL
+    ios_config:
+      lines:
+        - "no ip access-list standard {{ MATCH }}"
+    when: "'{{ MATCH }}' != None"
+    ignore_errors: yes
+
+  - name: CREATING NEW VTY ACL
+    ios_config:
+      lines:
+        - "ip access-list standard VTY_ACCESS_ACL"
+      match: exact
+    #when: {{ MATCH }} != 'VTY_ACCESS_ACL'
+    #when: OSFOUND == 'ios'
+
+  - name: ADDING ACL TO ACCESS_LIST
+    ios_config:
+      lines:  "{{ item }}"
+      parents: ['ip access-list standard VTY_ACCESS_ACL']
+      match: exact
+    with_items: "{{ VTY_ACCESS_ACL_IOS }}"
+    #when: OSFOUND == 'ios'
+
+  - name: APPLY NEW ACL TO VTY LINES 0 4 => ios
+    ios_config:
+      lines:
+        - access-class VTY_ACCESS_ACL in
+      parents: ['line vty 0 4']
+
+  - name: APPLY NEW ACL TO VTY LINES 5 15 => ios
+    ios_config:
+      lines:
+        - access-class VTY_ACCESS_ACL in
+      parents: ['line vty 5 15']
+      save_when: always
+    tags: save
+
+  - name: CHECK ACLs
+    ios_command:
+      commands:
+        - show access-list VTY_ACCESS_ACL
+        - show run | i access-class
+    #when: OSFOUND == 'ios'
+    register: afteracl
+
+  - debug: var=afteracl.stdout_lines

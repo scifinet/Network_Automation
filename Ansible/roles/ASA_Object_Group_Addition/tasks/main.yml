@@ -1,0 +1,43 @@
+---
+# tasks file for ASA_Object_Group_Addition
+
+- set_fact: object_group="{{ item }}"
+  with_items: "{{ OBJECT_GROUP }}"
+  tags: [gather, apply, verify]
+
+- set_fact: network="{{ item }}"
+  with_items: "{{ NETWORK }}"
+  tags: [gather, apply, verify]
+
+- name: VERIFY CURRENT OBJECT-GROUP DETAILS
+  asa_command:
+    commands:
+      - show object-group id {{ object_group }}
+    provider: "{{ asa }}"
+  register: group_details
+  tags: gather
+
+- debug: msg="{{group_details}}"
+  tags: gather
+
+- name: ADD NETWORK TO OBJECT-GROUP
+  asa_config:
+    lines:
+      - network-object {{ network }}
+    parents: ['object-group network {{ object_group }}']
+    provider: "{{ asa }}"
+  when: "{{ group_details.stdout|map(attribute='{{object_group}}')|list }}"
+#    - "{{ group_details.stdout|map(attribute='{{object_group}}')|list }}"
+#    - "{{ group_details.stdout|map(attribute='{{network}}')|list }}"
+  tags: apply
+
+- name: VERIFY NEW NETWORK EXISTS IN OBJECT-GROUP
+  asa_command:
+    commands:
+      - show object-group id {{ object_group }} | include {{ network }}
+    provider: "{{ asa }}"
+  register: verify_group
+  tags: verify
+
+- debug: msg="{{verify_group}}"
+  tags: verify
