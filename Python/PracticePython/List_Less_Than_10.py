@@ -14,4 +14,4 @@ def less_10(list):
             x.append(i)
     print(x)
 
-less_10(a)
+less_10(a)ASdz
