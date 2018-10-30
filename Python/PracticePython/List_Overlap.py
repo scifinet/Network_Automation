@@ -10,18 +10,24 @@ import random
 
 a = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89]
 b = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
-c = random.sample(range(1,20),3)
-d = random.sample(range(1,20),6)
 
 def compare():
     x = []
+    a = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89]
+    b = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+    print(a)
+    print(b)
     for i in a:
         if i in b:
             x.append(i)
-    print(x)
+    print(list(set(x)))
 
 def comparerand():
     y = []
+    c = random.sample(range(1,20),3)
+    d = random.sample(range(1,20),6)
+    print(c)
+    print(d)
     for i in c:
         if i in d:
             y.append(i)
@@ -30,11 +36,6 @@ def comparerand():
     else:
         print(y)
 
-
-print(a)
-print(b)
 compare()
 
-print(c)
-print(d)
 comparerand()
