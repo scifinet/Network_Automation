@@ -18,16 +18,17 @@ def compare():
     for i in a:
         if i in b:
             x.append(i)
-    print(set(x))
+    print(x)
 
 def comparerand():
     y = []
     for i in c:
         if i in d:
             y.append(i)
-            print(set(y))
-        else:
-            print("No duplicates found")
+    if len(y) == 0:
+        print("No duplicates found!")
+    else:
+        print(y)
 
 
 print(a)
