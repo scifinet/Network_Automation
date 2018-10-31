@@ -34,4 +34,4 @@ def comparerand():
         print(y)
 
 compare()
-comparerand()OY
+comparerand()
