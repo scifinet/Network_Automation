@@ -39,8 +39,7 @@ def inputs():
                 print("\nPlease ensure all 5 numbers are unique. ")
                 continue
             for i in number_choices:
-                if i in range(1,71):
-                    continue
+                if i not in range(1,71):
                 continue
             else:
                 break
