@@ -36,18 +36,18 @@ def RPS(pick_1, pick_2):
 def validate(sel_1, sel_2):
     while sel_1.lower() not in options:
         print("{} is not a valid option, try again! ".format(sel_1))
-        sel_1=input("Choose your option!\n-Rock\n-Paper\n-Scissors\n")
+        sel_1=input("Player 1, choose your option!\n-Rock\n-Paper\n-Scissors\n")
     while sel_2.lower() not in options:
         print("{} is not a valid option, try again! ".format(sel_2))
-        sel_2=input("Choose your option!\n-Rock\n-Paper\n-Scissors\n")
+        sel_2=input("Player 2, choose your option!\n-Rock\n-Paper\n-Scissors\n")
     good_choices = RPS(sel_1, sel_2)
     return(good_choices)
 
 def main():
     print("Let's play Rock-Paper-Scissors! ")
-    selection_1=input("Choose your option!\n-Rock\n-Paper\n-Scissors\n\n")
+    selection_1=input("Player 1, choose your option!\n-Rock\n-Paper\n-Scissors\n\n")
     print('\n' * 100)
-    selection_2=input("\n\nChoose your option!\n-Rock\n-Paper\n-Scissors\n\n")
+    selection_2=input("\n\nPlayer 2, choose your option!\n-Rock\n-Paper\n-Scissors\n\n")
     result = validate(selection_1, selection_2)
     return(result)
 

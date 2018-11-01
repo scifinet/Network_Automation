@@ -13,7 +13,7 @@ winning_set = []
 numbers_matched = []
 
 def inputs():
-    style_options = ['choose', 'random', 'exit']
+    style_options = ['choose', 'random', 'r', 'exit']
     while True:
         try:
             style=str(input("Would you like to choose your numbers or randomly generate them? (choose/random) \n"))
@@ -31,7 +31,7 @@ def inputs():
     if style.lower() == 'choose':
         while True:
             try:
-                num1, num2, num3, num4, num5 = [x for x in input("Please pick 5 numbers between 1-70. \n").split()]
+                num1, num2, num3, num4, num5 = [int(x) for x in input("Please pick 5 numbers between 1-70. \n").split()]
                 number_choices = [num1, num2, num3, num4, num5]
             except ValueError:
                 print("\n\nExiting game. If exit was not desired, try again and pick exactly 5 numbers. ")
@@ -69,22 +69,26 @@ def inputs():
                 continue
             else:
                 break
-        player_set.append(number_choices)
-        player_mega_ball.append(mega_ball)
+        player_set = number_choices
+        player_mega_ball = mega_ball
         return game_logic(player_set, player_mega_ball )
     if style.lower() == 'random':
         random_choices=random.sample(range(1,71),5)
         random_mega_ball=random.randint(1,25)
         return game_logic(random_choices, random_mega_ball)
+    if style.lower() == 'r':
+        random_choices=random.sample(range(1,71),5)
+        random_mega_ball=random.randint(1,25)
+        return game_logic(random_choices, random_mega_ball)
 
-def game_logic(set, mega):
-    print("Your numbers:", set)
+def game_logic(nums, mega):
+    print("Your numbers:", nums)
     print("Your MEGA Ball:", mega)
     winning_set=random.sample(range(1,71),5)
     print("Winning numbers:", winning_set)
     winning_mega_ball=random.randint(1,25)
     print("Winning MEGA Ball", winning_mega_ball)
-    for i in set:
+    for i in nums:
         if i in winning_set:
             numbers_matched.append(i)
     print("You matched:", numbers_matched)
@@ -116,7 +120,7 @@ def game_logic(set, mega):
     return play_again()
 
 def play_again():
-    game_options = ['yes', 'no', 'exit']
+    game_options = ['yes', 'y', 'no', 'exit']
     while True:
         open_game=str(input("\nWould you like to play again? \n "))
         if open_game.lower() not in game_options:
@@ -130,13 +134,20 @@ def play_again():
         print("Lets play! (Type 'exit' anytime to leave game. )\n")
         numbers_matched.clear()
         return inputs()
+    elif open_game.lower() == 'y':
+        print("Lets play! (Type 'exit' anytime to leave game. )\n")
+        numbers_matched.clear()
+        player_set.clear()
+        player_mega_ball.clear()
+        winning_set.clear()
+        return inputs()
 
 def exit():
     print("\n\nCome back to play the lottery anytime! \n")
 
 def main():
     print("\nWelcome to the Mega Millions game!")
-    game_options = ['yes', 'no', 'exit']
+    game_options = ['yes', 'y', 'no', 'exit']
     while True:
         open_game=str(input("\nWould you like to play the lottery?\n "))
         if open_game.lower() not in game_options:
@@ -147,5 +158,11 @@ def main():
     if open_game.lower() in ['no', 'exit']:
         return exit()
     elif open_game.lower() == 'yes':
-        print("Lets play! (Type 'exit' anytime to leave game. )\n")
+        print("\n\nLets play! (Type 'exit' anytime to leave game. )\n")
         return inputs()
+    elif open_game.lower() == 'y':
+        print("\n\nLets play! (Type 'exit' anytime to leave game. )\n")
+        return inputs()
+
+if __name__ == '__main__':
+    main()
