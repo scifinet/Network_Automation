@@ -40,7 +40,8 @@ def inputs():
                 continue
             for i in number_choices:
                 if i not in range(1,71):
-                continue
+                    print("Please choose 5 numbers between 1 and 70")
+                    continue
             else:
                 break
 
