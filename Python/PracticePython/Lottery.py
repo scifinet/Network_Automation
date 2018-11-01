@@ -25,15 +25,26 @@ def inputs():
         print("Lets play! \n")
     style_options = ['choose', 'random']
     while True:
-        stlye=str(input("Would you like to choose your numbers or randomly generate them? (choose/random) \n"))
+        style=str(input("Would you like to choose your numbers or randomly generate them? (choose/random) \n"))
         if style.lower() not in style_options:
             print("Please type 'choose', or 'random'. \n")
             continue
         else:
             break
-    if style_options.lower() is 'choose':
+    if style.lower() == 'choose':
         while True:
             num1, num2, num3, num4, num5 = [int(x) for x in input("Please pick 5 numbers between 1-70. \n").split()]
+            number_choices = [num1, num2, num3, num4, num5]
+            if len(set(number_choices)) != len(number_choices):
+                print("\nPlease ensure all 5 numbers are unique. ")
+                continue
+            for i in number_choices:
+                if i in range(1,71):
+                    continue
+                continue
+            else:
+                break
+
 
 
 
