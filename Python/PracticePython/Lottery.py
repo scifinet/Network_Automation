@@ -5,6 +5,7 @@
 # randomly generated numbers with the same stipulations. Set winning prizes
 # based on the Mega Millions prize chart."""
 
+import random
 
  player_set = []
  winning_set = []
@@ -38,12 +39,16 @@ def inputs():
             if len(set(number_choices)) != len(number_choices):
                 print("\nPlease ensure all 5 numbers are unique. ")
                 continue
-            for i in number_choices:
-                if i not in range(1,71):
-                    print("Please choose 5 numbers between 1 and 70")
-                    continue
+            elif min(number_choices) < 1:
+                print("Please ensure all 5 numbers between 1 and 70")
+                continue
+            elif max(number_choices) > 70:
+                print("Please ensure all 5 numbers between 1 and 70")
+                continue
             else:
                 break
+        if style.lower() == 'random':
+            random_choices=random.sample(range(1,70),5)
 
 
 
