@@ -82,12 +82,12 @@ def inputs():
         return game_logic(random_choices, random_mega_ball)
 
 def game_logic(nums, mega):
-    print("Your numbers:", nums)
+    print("\n\nYour numbers:", nums)
     print("Your MEGA Ball:", mega)
     winning_set=random.sample(range(1,71),5)
     print("Winning numbers:", winning_set)
     winning_mega_ball=random.randint(1,25)
-    print("Winning MEGA Ball", winning_mega_ball)
+    print("Winning MEGA Ball:", winning_mega_ball)
     for i in nums:
         if i in winning_set:
             numbers_matched.append(i)
@@ -95,7 +95,7 @@ def game_logic(nums, mega):
     if mega == winning_mega_ball:
         print("\nYou matched", len(numbers_matched), "numbers and the MEGA Ball!")
         if len(numbers_matched) == 0:
-            print("That is not a winner, better luck next time! ")
+            print("\nThat is not a winner, better luck next time! ")
         elif len(numbers_matched) == 1:
             print("\n\nYou won $4. Odds--1:89")
         elif len(numbers_matched) == 2:
@@ -110,7 +110,7 @@ def game_logic(nums, mega):
     elif mega != winning_mega_ball:
         print("\n\nYou matched", len(numbers_matched), "numbers.")
         if len(numbers_matched) <= 2:
-            print("\n\nBetter luck next time!")
+            print("\nBetter luck next time!")
         elif len(numbers_matched) == 3:
             print("\n\nYou won $10. Odds--1:606")
         elif len(numbers_matched) == 4:
@@ -122,20 +122,20 @@ def game_logic(nums, mega):
 def play_again():
     game_options = ['yes', 'y', 'no', 'exit']
     while True:
-        open_game=str(input("\nWould you like to play again? \n "))
+        open_game=str(input("Would you like to play again? \n "))
         if open_game.lower() not in game_options:
-            print("\n\nPlease type 'yes', 'no', or 'exit'. ")
+            print("\nPlease type 'yes', 'no', or 'exit'. ")
             continue
         else:
             break
     if open_game.lower() in ['no', 'exit']:
         return exit()
     elif open_game.lower() == 'yes':
-        print("Lets play! (Type 'exit' anytime to leave game. )\n")
+        print("Lets play! (Type 'exit' anytime to leave game. )")
         numbers_matched.clear()
         return inputs()
     elif open_game.lower() == 'y':
-        print("Lets play! (Type 'exit' anytime to leave game. )\n")
+        print("\nLets play! (Type 'exit' anytime to leave game. )")
         numbers_matched.clear()
         player_set.clear()
         player_mega_ball.clear()
