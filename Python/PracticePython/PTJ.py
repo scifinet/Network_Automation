@@ -1,4 +1,5 @@
 import random
+import time
 
 player_set = []
 player_mega_ball = []
@@ -77,6 +78,7 @@ def inputs(style):
         return game_logic(random_choices, random_mega_ball)
 
 def ptj(nums, mega):
+    start = time.time()
     while True:
         random_choices=random.sample(range(1,71),5)
         random_mega_ball=random.sample(range(1,26),1)
@@ -131,6 +133,9 @@ def ptj(nums, mega):
             print("\n\nYou won $500. Odds--1:38,792")
         elif len(numbers_matched) == 4:
             print("\n\nYou won $1,000,000! Odds--1:12,607,306\n\nSo close to the Jackpot!")
+    end = time.time()
+    print(end-start, "seconds")
+    print("Approximatele", 14457/(end-start), "iterations per second")
     return play_again()
 
 def game_logic(nums, mega):
