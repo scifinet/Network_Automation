@@ -77,45 +77,35 @@ def inputs(style):
         return game_logic(random_choices, random_mega_ball)
 
 def ptj(nums, mega):
-    random_choices=random.sample(range(1,71),5)
-    random_mega_ball=random.randint(1,25)
     while True:
-      print("Your numbers:", random_choices)
-      print("Your MEGA Ball:", random_mega_ball)
-      winning_set=random.sample(range(1,71),5)
-      print("Winning numbers:", winning_set)
-      winning_mega_ball=random.randint(1,25)
-      print("Winning MEGA Ball", winning_mega_ball)
-      for i in random_choices:
-          if i in winning_set:
-              numbers_matched.append(i)
-      print("You matched:", numbers_matched)
-      if len(numbers_matched) != 5:
-        numbers_matched.clear()
-        player_set.clear()
-        player_mega_ball.clear()
-        winning_set.clear()
         random_choices=random.sample(range(1,71),5)
+        random_mega_ball=random.sample(range(1,26),1)
         print("Your numbers:", random_choices)
         print("Your MEGA Ball:", random_mega_ball)
         winning_set=random.sample(range(1,71),5)
         print("Winning numbers:", winning_set)
-        for i in random_choices:
-            if i in winning_set:
-                numbers_matched.append(i)
-        print("You matched:", numbers_matched)
-        continue
-      elif random_mega_ball != winning_mega_ball:
-        numbers_matched.clear()
-        player_set.clear()
-        player_mega_ball.clear()
-        winning_set.clear()
-        random_mega_ball=random.randint(1,25)
-        winning_mega_ball=random.randint(1,25)
+        winning_mega_ball=random.sample(range(1,26),1)
         print("Winning MEGA Ball", winning_mega_ball)
-        continue
-      else:
-        break
+        for i in random_choices:
+             if i in winning_set:
+                 numbers_matched.append(i)
+        print("You matched:", numbers_matched)
+        if len(numbers_matched) != 3:
+            numbers_matched.clear()
+            random_choices.clear()
+            random_mega_ball.clear()
+            winning_set.clear()
+            winning_mega_ball.clear()
+            continue
+        elif random_mega_ball != winning_mega_ball:
+            numbers_matched.clear()
+            player_set.clear()
+            player_mega_ball.clear()
+            winning_set.clear()
+            random_choices.clear()
+            continue
+        else:
+            break
     if random_mega_ball == winning_mega_ball:
         print("\nYou matched", len(numbers_matched), "numbers and the MEGA Ball!")
         if len(numbers_matched) == 0:
