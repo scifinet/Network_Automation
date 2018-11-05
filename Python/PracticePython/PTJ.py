@@ -92,7 +92,7 @@ def ptj(nums, mega):
              if i in winning_set:
                  numbers_matched.append(i)
         print("You matched:", numbers_matched)
-        if len(numbers_matched) != 3:
+        if len(numbers_matched) != 5:
             numbers_matched.clear()
             random_choices.clear()
             random_mega_ball.clear()
@@ -109,33 +109,21 @@ def ptj(nums, mega):
         else:
             break
     if random_mega_ball == winning_mega_ball:
+        end = time.time()
         print("\nYou matched", len(numbers_matched), "numbers and the MEGA Ball!")
         if len(numbers_matched) == 0:
             print("That is not a winner, better luck next time! ")
         elif len(numbers_matched) == 1:
-            print("\n\nYou won $4. Odds--1:89")
+            print("\n\nYou won $4. Odds--1:89", "\nApproximately", 89/(end-start), "iterations per second", "\nIt took", (end-start), "seconds.")
         elif len(numbers_matched) == 2:
-            print("\n\nYou won $10. Odds--1:693")
+            print("\n\nYou won $10. Odds--1:693", "\nApproximately", 693/(end-start), "iterations per second", "\nIt took", (end-start), "seconds.")
         elif len(numbers_matched) == 3:
-            print("\n\nYou won $200. Odds--1:14,547")
+            print("\n\nYou won $200. Odds--1:14,547", "\nApproximately", 14457/(end-start), "iterations per second", "\nIt took", (end-start), "seconds.")
         elif len(numbers_matched) == 4:
-            print("\n\nYou won $10,000. Odds--1:931,001")
+            print("\n\nYou won $10,000. Odds--1:931,001", "\nApproximately", 931001/(end-start), "iterations per second", "\nIt took", (end-start), "seconds.")
         elif len(numbers_matched) == 5:
             print("JACKPOT!!!"*500)
-            print("\n\nYou won $1,000,000,000!!! Odds--1:302,575,350")
-    elif random_mega_ball != winning_mega_ball:
-        print("\n\nYou matched", len(numbers_matched), "numbers.")
-        if len(numbers_matched) <= 2:
-            print("\n\nBetter luck next time!")
-        elif len(numbers_matched) == 3:
-            print("\n\nYou won $10. Odds--1:606")
-        elif len(numbers_matched) == 4:
-            print("\n\nYou won $500. Odds--1:38,792")
-        elif len(numbers_matched) == 4:
-            print("\n\nYou won $1,000,000! Odds--1:12,607,306\n\nSo close to the Jackpot!")
-    end = time.time()
-    print(end-start, "seconds")
-    print("Approximatele", 14457/(end-start), "iterations per second")
+            print("\n\nYou won $1,000,000,000!!! Odds--1:302,575,350", "\nApproximately", 302575350/(end-start), "iterations per second", (end-start), "seconds.")
     return play_again()
 
 def game_logic(nums, mega):
