@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from tutorial.authhelper import get_signin_url
+from tutorial.authhelper import get_signin_url, get_token_from_code, get_access_token
+import time
 
 # Create your views here.
 
@@ -12,7 +14,7 @@ def home(request):
 
 # Add import statement to include new function
 from tutorial.outlookservice import get_me
-from tutorial.authhelper import get_token_from_code
+from tutorial.authhelper import get_token_from_code, get_access_token
 
 def gettoken(request):
   auth_code = request.GET['code']
@@ -20,7 +22,17 @@ def gettoken(request):
   token = get_token_from_code(auth_code, redirect_uri)
   access_token = token['access_token']
   user = get_me(access_token)
+  refresh_token = token['refresh_token']
+  expires_in = token['expires_in']
+
+  # expires_in is in seconds
+  # Get current timestamp (seconds since Unix Epoch) and
+  # add expires_in to get expiration time
+  # Subtract 5 minutes to allow for clock differences
+  expiration = int(time.time()) + expires_in - 300
 
   # Save the token in the session
   request.session['access_token'] = access_token
+  request.session['refresh_token'] = refresh_token
+  request.session['token_expires'] = expiration
   return HttpResponse('User: {0}, Access token: {1}'.format(user['displayName'], access_token))
