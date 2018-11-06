@@ -1,12 +1,27 @@
-from django.conf.urls import url 
-from tutorial import views 
+from django.conf.urls import url
+from tutorial import views
 
 app_name = 'tutorial'
 urlpatterns = [
-  # The home view ('/tutorial/') 
-  url(r'^$', views.home, name='home'), 
-  # Explicit home ('/tutorial/home/') 
-  url(r'^home/$', views.home, name='home'), 
+  # The home view ('/tutorial/')
+  url(r'^$', views.home, name='home'),
+  # Explicit home ('/tutorial/home/')
+  url(r'^home/$', views.home, name='home'),
   # Redirect to get token ('/tutorial/gettoken/')
   url(r'^gettoken/$', views.gettoken, name='gettoken'),
+]
+
+from django.conf.urls import url
+from tutorial import views
+
+app_name = 'tutorial'
+urlpatterns = [
+  # The home view ('/tutorial/')
+  url(r'^$', views.home, name='home'),
+  # Explicit home ('/tutorial/home/')
+  url(r'^home/$', views.home, name='home'),
+  # Redirect to get token ('/tutorial/gettoken/')
+  url(r'^gettoken/$', views.gettoken, name='gettoken'),
+  # Mail view ('/tutorial/mail/')
+  url(r'^mail/$', views.mail, name='mail'),
 ]
