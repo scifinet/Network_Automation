@@ -1,3 +1,4 @@
+import requests
 from urllib.parse import quote, urlencode
 import base64
 import json
@@ -33,3 +34,20 @@ def get_signin_url(redirect_uri):
   signin_url = authorize_url.format(urlencode(params))
 
   return signin_url
+
+def get_token_from_code(auth_code, redirect_uri):
+  # Build the post form for the token request
+  post_data = { 'grant_type': 'authorization_code',
+                'code': auth_code,
+                'redirect_uri': redirect_uri,
+                'scope': ' '.join(str(i) for i in scopes),
+                'client_id': client_id,
+                'client_secret': client_secret
+              }
+
+  r = requests.post(token_url, data = post_data)
+
+  try:
+    return r.json()
+  except:
+    return 'Error retrieving token: {0} - {1}'.format(r.status_code, r.text)
