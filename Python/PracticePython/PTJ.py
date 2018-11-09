@@ -92,7 +92,7 @@ def ptj(nums, mega):
              if i in winning_set:
                  numbers_matched.append(i)
         print("You matched:", numbers_matched)
-        if len(numbers_matched) != 5:
+        if len(numbers_matched) != 4:
             numbers_matched.clear()
             random_choices.clear()
             random_mega_ball.clear()
