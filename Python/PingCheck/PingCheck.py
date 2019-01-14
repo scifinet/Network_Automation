@@ -1,4 +1,4 @@
-# Use this to ping check a set of IPs.getstatusoutput('ping -c1' + str(i))
+# Use this to ping check a set of IPs.
 
 import subprocess as sp
 
@@ -8,7 +8,12 @@ def PingCheck():
     secondOctet = str(ipRange).split('.')[1]
     thirdOctet = str(ipRange).split('.')[2]
     lastOctetRange = str(ipRange).split('.')[3]
-    finalIp = int(str(lastOctetRange).split('-')[1])
+    if "-" in lastOctetRange:
+        beginningIp = int(str(lastOctetRange).split('-')[0])
+        finalIp = int(str(lastOctetRange).split('-')[1])
+    else:
+        beginningIp = int(str(ipRange).split('.')[3])
+        finalIp = int(str(ipRange).split('.')[3])
     dot = "."
     subnetOctets = [firstOctet, secondOctet, thirdOctet]
     subnet = dot.join(subnetOctets) + "."
