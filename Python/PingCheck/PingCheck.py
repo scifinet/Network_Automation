@@ -8,7 +8,6 @@ def PingCheck():
     secondOctet = str(ipRange).split('.')[1]
     thirdOctet = str(ipRange).split('.')[2]
     lastOctetRange = str(ipRange).split('.')[3]
-    beginningIp = int(str(lastOctetRange).split('-')[0])
     finalIp = int(str(lastOctetRange).split('-')[1])
     dot = "."
     subnetOctets = [firstOctet, secondOctet, thirdOctet]
