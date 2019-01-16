@@ -9,25 +9,25 @@
 import random
 
 def compare():
-    x = []
+    x = set()
     a = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89]
     b = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
     print(a)
     print(b)
     for i in a:
         if i in b:
-            x.append(i)
-    print(list(set(x)))
+            x.add(i)
+    print(x)
 
 def comparerand():
-    y = []
+    y = set()
     c = random.sample(range(1,20),3)
     d = random.sample(range(1,20),6)
     print(c)
     print(d)
     for i in c:
         if i in d:
-            y.append(i)
+            y.add(i)
     if len(y) == 0:
         print("No duplicates found!")
     else:
