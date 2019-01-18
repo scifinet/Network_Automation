@@ -25,60 +25,7 @@
 #       - no access-class "{{ VTY_ACL }}"
 #       - no access-list "{{ VTY_ACL }}"
 
-# -name: CREATE NEW VTY ACL
-#  nxos_acl:
-#    name: VTY_ACCESS_ACL
-#    seq: 100
-#    action: remark
-#    remark: *** BAMTECH Admin NMS ***
-#    seq: 110
-#    action: permit
-#    proto: ip
-#    src: 10.1.240.0/22
-#    dst: any
-#    state: present
-#    seq: 120
-#    action: permit
-#    proto: ip
-#    src: 10.2.240.0/22
-#    dst: any
-#    state: present
-#    seq: 130
-#    action: permit
-#    proto: ip
-#    src: 10.3.240.0/22
-#    dst: any
-#    state: present
-#    seq: 200
-#    action: remark
-#    remark: *** User Networks ***
-#    seq: 210
-#    action: permit
-#    proto: ip
-#    src: 10.144.120.245/32
-#    dst: any
-#    state: present
-#    seq: 2200
-#    action: permit
-#    proto: ip
-#    src: 10.145.120.254/32
-#    dst: any
-#    state: present
-#    seq: 300
-#    action: remark
-#    remark: *** Legacy Connectivity ***
-#    seq: 310
-#    action: permit
-#    proto: ip
-#    src: 10.4.240.0/24
-#    dst: any
-#    state: present
-#    seq: 110
-#    action: permit
-#    proto: ip
-#    src: 10.5.240.0/24
-#    dst: any
-#    state: present
+
 
 # -name: APPLY NEW ACL TO VTY LINES
 #  nxos_config:

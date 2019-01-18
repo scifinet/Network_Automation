@@ -1,7 +1,7 @@
 ---
 newimage: c2960x-universalk9-mz.152-2.E7.bin
 version: "15.0(2)E7"
-snmpcommunity: "5CardStud"
+snmpcommunity: <redacted>
 model: "WS-C2960X-48TS-LL"
 fullpath: /opt/ansible/roles/ios_upgrade/files/{{newimage}}
 #backuppath: /opt/ansible/roles/backup/{{ inventory_hostname }}.cfg
