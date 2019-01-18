@@ -1,0 +1,41 @@
+---
+
+- set_fact:
+    local1="{{local.results[0].item[0:] | replace('GigabitEthernet','Gi') | replace ('Ethernet','Eth') }}"
+  register: one_interfaces
+
+- debug:
+    msg="{{one_interfaces}}"
+
+- set_fact:
+    neighbor1="{{neighbor.results[0].item[0:] | replace('.net.bamtech.co','') | replace ('(*)','') }}"
+  register: one_neighbors
+
+- debug:
+    msg="{{one_neighbors}}"
+
+- set_fact:
+    neighbor_port1="{{neighbor_port.results[0].item[0:] | replace('GigabitEthernet','Gi') | replace ('Ethernet','Eth') }}"
+  register: one_neighbor_ports
+
+- debug:
+    msg="{{one_neighbor_ports}}"
+
+- name: VERIFY CURRENT LOCAL INTERFACE DESCRIPTIONS
+  nxos_command:
+    commands:
+      - show interface status | i "{{ local1 }}" | awk '{print $2}'
+  register: current1
+
+- set_fact:
+    interface1_description="{{neighbor1}}_{{neighbor_port1}}"
+
+- debug:
+    msg="{{interface1_description}}"
+
+- name: CONFIG DESCRIPTION ON LOCAL INTERFACE
+  nxos_config:
+    lines:
+      - description {{ interface1_description }}
+    parents: "interface {{ local1 }}"
+  when: current1.stdout[0] == "--"

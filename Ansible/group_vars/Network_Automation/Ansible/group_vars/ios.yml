@@ -1,0 +1,24 @@
+---
+newimage: c2960x-universalk9-mz.152-2.E7.bin
+version: "15.0(2)E7"
+snmpcommunity: <redacted>
+model: "WS-C2960X-48TS-LL"
+fullpath: /opt/ansible/roles/ios_upgrade/files/{{newimage}}
+#backuppath: /opt/ansible/roles/backup/{{ inventory_hostname }}.cfg
+backuppath: /tmp/{{ inventory_hostname }}.cfg
+
+ansible_connection: local
+ansible_network_os: ios
+#ansible_become: yes
+#ansible_become_method: enable
+ios:
+  host: "{{ inventory_hostname }}"
+  username: "{{ user }}"
+  password: "{{ pass }}"
+  connection: ssh
+cisco:
+  host: "{{ inventory_hostname }}"
+  username: "{{ user }}"
+  password: "{{ pass }}"
+#  connection: ssh
+#  transport: cli

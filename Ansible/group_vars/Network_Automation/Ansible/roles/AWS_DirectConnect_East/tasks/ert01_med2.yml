@@ -1,0 +1,168 @@
+---
+- name: GATHER CURRENT SUB-INTERFACE INFO
+  nxos_command:
+    commands:
+      - show ip interface brief | i Eth1/11. | last 1
+  register: showint
+  tags: int
+
+- name: GATHER CURRENT ENCAPSULATION
+  nxos_command:
+    commands:
+      - show run int | i encapsulation | last 1
+  register: encap
+  tags: encap
+
+- debug: msg="{{showint}}"
+  tags: int
+
+- debug: msg="{{encap}}"
+  tags: encap
+
+- set_fact: patternint="(11\d+)"
+  tags: int
+
+- set_fact: patternencap="(3\d+)"
+  tags: encap
+
+- name: LAST SUB-INTERFACE USED
+  set_fact: lastsubint="{{showint.stdout[0] | regex_search(patternint)}}"
+  tags: int
+
+- debug: var=lastsubint
+  tags: int
+
+- name: LAST ENCAP USED
+  set_fact: lastencap="{{encap.stdout[0] | regex_search(patternencap)}}"
+  tags: encap
+
+- debug: var=lastencap
+  tags: encap
+
+- name: NAME OF NEW DIRECTCONNECT
+  set_fact: EAST_DEV="{{ item }}"
+  with_items: "{{ EAST_DEV_NAME }}"
+  tags: items
+
+- debug: msg="{{EAST_DEV}}"
+  tags: items
+
+- set_fact: east_dev="{{ EAST_DEV|lower }}"
+  tags: items
+
+- debug: msg="{{east_dev}}"
+  tags: items
+
+# - set_fact: EAST_QA="{{ item }}"
+#   with_items: "{{ EAST_QA_NAME }}"
+
+# - debug: msg="{{EAST_QA}}"
+
+# - set_fact: EAST_PROD="{{ item }}"
+#   with_items: "{{ EAST_PROD_NAME }}"
+
+# - debug: msg="{{EAST_PROD}}"
+
+- name: NEW DIRECTCONNECT SUBNETS
+  set_fact: EAST_DEV_NET_1_2="{{ item }}"
+  with_items: "{{ EAST_DEV_SUBNET_10_x }}"
+  tags: items
+
+- set_fact: EAST_DEV_NET_3="{{ item }}"
+  with_items: "{{ EAST_DEV_SUBNET_x }}"
+  tags: items
+
+- set_fact: EAST_DEV_NET_4="{{ item }}"
+  with_items: "{{ EAST_DEV_SUBNET_0 }}"
+  tags: items
+
+- debug: msg="{{EAST_DEV_NET_1_2}}"
+  tags: items
+
+- debug: msg="{{EAST_DEV_NET_3}}"
+  tags: items
+
+- debug: msg="{{EAST_DEV_NET_4}}"
+  tags: items
+
+# - set_fact: EAST_QA_NET="{{ item }}"
+#   with_items: "{{ EAST_QA_SUBNET }}"
+
+# - debug: msg="{{EAST_QA_NET}}"
+
+# - set_fact: EAST_PROD_NET="{{ item }}"
+#   with_items: "{{ EAST_PROD_SUBNET }}"
+
+# - debug: msg="{{EAST_PROD_NET}}"
+
+- name: NEXT SUB-INTERFACE NUMBER
+  set_fact: nextsubint={{ lastsubint | int + 1 }}
+  tags: items
+
+- debug: msg="{{nextsubint}}"
+  tags: items
+
+- name: NEXT ENCAPSULATION ID NUMBER
+  set_fact: nextencap={{ lastencap | int + 1 }}
+  tags: items
+
+- debug: msg="{{nextencap}}"
+  tags: items
+
+- name: THIRD OCTET CHANGE FOR SUB-INT USED
+  set_fact: thirdoctet={{ EAST_DEV_NET_3 | int + 31 }}
+  tags: items
+
+- debug: msg="{{thirdoctet}}"
+  tags: items
+
+- name: CREATE NEW SUB-INTERFACE
+  nxos_config:
+    lines:
+      - "interface Ethernet1/11. {{ nextsubint }}"
+      - description {{ EAST_DEV }}
+      - encapsulation dot1q {{ nextencap }}
+      - ip address {{ EAST_DEV_NET_1_2 }}{{ thirdoctet }}.13/30
+  tags: create
+
+- name: CREATE NEW PREFIX-LIST
+  nxos_config:
+    lines:
+      - ip prefix-list AWS_EAST_{{ EAST_DEV }}_PL sequence 10 permit {{ EAST_DEV_NET_1_2 }}{{ EAST_DEV_NET_3}}.0/19
+  tags: create
+
+- name: CREATE NEW ROUTE-MAP
+  nxos_config:
+    lines:
+      - route-map FROM_AWS_EAST_{{ EAST_DEV }}_RM permit 10
+      - match ip address prefix-list AWS_EAST{{ EAST_DEV }}_PL
+      - set community 65158:30000
+  tags: create
+
+- name: ADD NEIGHBOR TO BGP SESSION 11251
+  nxos_config:
+    lines:
+      - neighbor {{ EAST_DEV_NET_1_2 }}{{ thirdoctet }}.14
+      - remote-as 7224
+      - description oma2_{{ east_dev }}
+      - password {{ EAST_DEV }}
+      - address-family ipv4 unicast
+      - route-map FROM_AWS_EAST_{{ EAST_DEV }}_RM in
+      - route-map ROUTES_TO_AWS_RM out
+      - soft-reconfiguration inbound always
+  when: "{{ item }}" == NO
+  with_items: MLB_SPECIFIC
+
+- name: ADD NEIGHBOR TO BGP SESSION 11251
+  nxos_config:
+    lines:
+      - neighbor {{ EAST_DEV_NET_1_2 }}{{ thirdoctet }}.14
+      - remote-as 7224
+      - description oma2_{{ east_dev }}
+      - password {{ EAST_DEV }}
+      - address-family ipv4 unicast
+      - route-map FROM_AWS_EAST_{{ EAST_DEV }}_RM in
+      - route-map ROUTES_TO_MLB_AWS_RM out
+      - soft-reconfiguration inbound always
+  when: "{{ item }}" == YES
+  with_items: MLB_SPECIFIC

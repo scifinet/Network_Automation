@@ -1,0 +1,9 @@
+---
+# vars file for ASA_Object_Group_Addition
+
+OBJECT_GROUP:
+  - <name>
+
+NETWORK:
+  - 10.86.247.0 255.255.255.0
+  #- EX: <10.10.10.0 255.255.255.0>

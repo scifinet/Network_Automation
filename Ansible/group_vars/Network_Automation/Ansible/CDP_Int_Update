@@ -1,0 +1,19 @@
+1) Gather list of interfaces under CDP neighbors
+    - show cdp neighbors | i Eth|mgmt | awk '{print $1}'
+      - list
+2) Gather connected device information for each CDP neighbor
+    - show cdp neigh interface <int_x> | beg Device-ID | awk 'FNR == 2'
+      - set fact (ex. INT_X_DEVICE)
+    - show cdp neigh int <int_x> | beg Device-ID | awk 'FNR == 3 {print $6}'
+      - set fact (ex. INT_X_DEVICE_PORT)
+3) Show int status | i <int_x> | awk '{print $2}'
+    - This will display the current description of the interface
+    - If it displays "--", that means it has no description
+    - debug output and set as fact (ex. CURRENT_INT_X_DESC)
+4) Set fact for new descriptions
+    - set fact INT_X_DESC == <INT_X_DEVICE>_<INT_X_DEVICE_PORT>
+4) Set interface description to match corresponding CDP neighbor
+    - conf t
+    - interface <int_x>
+    - description <INT_X_DESC>
+    - when CURRENT_INT_X_DESC == "--"

@@ -1,0 +1,145 @@
+#Logic Flow
+
+#ansible-playbook -i inventories/US-WEST/MD2  playbook/nxosVTY.yml --ask-vault-pass -u jhealy -k
+
+
+#/opt/ansible/playbook/nxosVTY.yml
+---
+# Install pip install pyntc future
+- hosts: MD2
+  gather_facts: no
+  vars:
+    - user: "{{ lookup('env','USER') }}"
+  vars_files:
+    #- ../playbook/providers.yml
+    - /home/{{user}}/.cred
+    - ../playbook/nxosprovidersVTY.yml
+    #- ../group_vars/ios.yml
+  roles:
+    - checklist
+
+
+
+#/opt/ansible/playbook/nxosprovidersVTY.yml
+---
+ansible_connection: local
+ansible_network_os: nxos
+ansible_become: yes
+ansible_become_method: enable
+#ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p -q nms01.mlbam.net"'
+cisco:
+  host: "{{ inventory_hostname }}"
+  username: "{{ username }}"
+  password: "{{ password }}"
+  #transport: cli
+ios:
+  host: "{{ inventory_hostname }}"
+  username: "{{ username }}"
+  password: "{{ password }}"
+  transport: cli
+  connection: ssh
+
+
+
+#/opt/ansible/roles/checklist/tasks/main.yml
+---
+# tasks file for checklist
+- name: GATHER VTY FACTS
+  nxos_command:
+    commands: show run | sec line
+    wait_for: result[0] contains access-class
+    match: any
+  register: output
+
+# - set_fact:
+#     VTY_ACL: "{{ output.stdout_lines | regex_search(regexp) }}"
+#   vars:
+#     regexp: 'access-class\s+\b(\w+)\b'
+
+# - name: CURRENT VTY ACL
+#   debug:
+#     var: VTY_ACL
+
+- name: CURRENT VTY ACL
+  debug: msg="{{ output.stdout_lines }}"
+
+# - name: REMOVE OLD VTY ACL
+#   nxos_config:
+#     lines:
+#       - no access-class "{{ VTY_ACL }}"
+#       - no access-group "{{ VTY_ACL }}"
+
+# -name: CREATE NEW VTY ACL
+#  nxos_acl:
+#    name: VTY_ACCESS_ACL
+#    seq: 100
+#    action: remark
+#    remark: *** BAMTECH Admin NMS ***
+#    seq: 110
+#    action: permit
+#    proto: ip
+#    src: 10.1.240.0/22
+#    dst: any
+#    state: present
+#    seq: 120
+#    action: permit
+#    proto: ip
+#    src: 10.2.240.0/22
+#    dst: any
+#    state: present
+#    seq: 130
+#    action: permit
+#    proto: ip
+#    src: 10.3.240.0/22
+#    dst: any
+#    state: present
+#    seq: 200
+#    action: remark
+#    remark: *** User Networks ***
+#    seq: 210
+#    action: permit
+#    proto: ip
+#    src: 10.144.120.245/32
+#    dst: any
+#    state: present
+#    seq: 2200
+#    action: permit
+#    proto: ip
+#    src: 10.145.120.254/32
+#    dst: any
+#    state: present
+#    seq: 300
+#    action: remark
+#    remark: *** Legacy Connectivity ***
+#    seq: 310
+#    action: permit
+#    proto: ip
+#    src: 10.4.240.0/24
+#    dst: any
+#    state: present
+#    seq: 110
+#    action: permit
+#    proto: ip
+#    src: 10.5.240.0/24
+#    dst: any
+#    state: present
+
+# -name: APPLY NEW ACL TO VTY LINES
+#  nxos_config:
+#    lines:
+#      - configure terminal
+#      - line vty
+#      - access-class VTY_ACCESS_ACL
+
+# -name: GATHER NEW VTY LINE FACTS
+#  nxos_command:
+#    commands: show run | sec line
+#  register: output
+
+# -name: VERIFY NEW VTY CONFIG
+#  debug: msg="{{ output.stdout_lines }}"
+
+# -name: SAVE CONFIG
+#  nxos_config:
+#    lines:
+#      - save
