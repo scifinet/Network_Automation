@@ -26,6 +26,6 @@ def PingCheck():
         if status == 0:
             print(i + " is UP !")
         else:
-            print(i + " is DOWN !")sa
+            print(i + " is DOWN !")
 if __name__ == '__main__':
     PingCheck()
