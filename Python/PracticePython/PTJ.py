@@ -91,8 +91,8 @@ def ptj(nums, mega):
         for i in random_choices:
              if i in winning_set:
                  numbers_matched.append(i)
-        print("You matched:", numbers_matched)
-        if len(numbers_matched) != 4:
+        print("You matched:", numbers_matched, "\n")
+        if len(numbers_matched) != 2:
             numbers_matched.clear()
             random_choices.clear()
             random_mega_ball.clear()

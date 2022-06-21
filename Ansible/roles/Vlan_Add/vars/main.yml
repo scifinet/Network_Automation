@@ -1,0 +1,8 @@
+---
+# vars file for Vlan_Add
+
+INTERFACE:
+  - <Ethernet x/x>
+
+VLAN:
+  - <vlan number>

@@ -1,0 +1,39 @@
+---
+# - name: GATHER OS via SNMP
+  snmp_device_version:
+    host: SSFLAB-5596UP.gene.com
+    version: 2c
+    community: "{{ SNMP_RO }}"
+  delegate_to: local
+  register: output
+  tags: vty
+
+- set_fact: OSFOUND="{{output.ansible_facts.ansible_device_os}}"
+  tags: vty,showint
+
+- debug: msg="{{OSFOUND}}"
+  tags: vty
+
+- name: CONFIG NXOS
+  include_tasks: nxos.yml
+  when: OSFOUND == 'nxos'
+  register: vty
+  tags: vty
+
+- name: CONFIG IOS
+  include_tasks: ios.yml
+  when: OSFOUND == 'ios' or OSFOUND == 'ios-xe'
+  register: vty
+  tags: vty
+
+- name: CONFIG IOS_XR
+  include_tasks: iosxr.yml
+  when: OSFOUND == 'ios-xr'
+  register: vty
+  tags: vty
+
+- name: CONFIG EOS
+  include_tasks: eos.yml
+  when: OSFOUND == 'eos'
+  register: vty
+  tags: vty

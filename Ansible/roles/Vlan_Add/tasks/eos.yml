@@ -1,0 +1,58 @@
+- name: GATHER INTERFACE STATUS
+  eos_config:
+    lines:
+      - show int status | json
+  register: intstatus
+  #tags: status
+
+- debug: msg= "{{intstatus}}"
+  #tags: status
+
+- debug:
+    var: item
+  loop: "{{ intstatus.stdout[0] | json_query('TABLE_interface.ROW_interface[*].interface') }}"
+  register: interface
+  #tags: status
+
+- debug:
+    var: item
+  loop: "{{ intstatus.stdout[0] | json_query('TABLE_interface.ROW_interface[*].state') }}"
+  register: int_state
+  #tags: status
+
+- debug:
+    var: item
+  loop: "{{ intstatus.stdout[0] | json_query('TABLE_interface.ROW_interface[*].vlan') }}"
+  register: int_vlan
+  #tags: status
+
+- name: GATHER VLAN DATABASE
+  eos_config:
+    lines:
+      - show vlan | json
+  register: vlandb
+  #tags: vlandb
+
+- debug:
+    var: item
+  loop: "{{ vlandb.stdout[0] | json_query('TABLE_vlanbrief.ROW_vlanbrief[*].vlanshowbr-vlanid') }}"
+  register: vlan_ids
+  #tags: vlandb
+
+- name: CONFIGURE VLAN
+  eos_config:
+    lines:
+      - vlan "{{VLAN}}"
+  when: "{{VLAN}}" not in vlan_ids
+  #tags: vlandb
+
+- name: CONFIGURE INTERFACE
+  eos_config:
+    lines:
+      - switchport mode access
+      - switchport access vlan "{{VLAN}}"
+      - no shutdown
+    parents:
+      - interface "{{INTERFACE}}"
+  when:
+    - "{{VLAN}}"
